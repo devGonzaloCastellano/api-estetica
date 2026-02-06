@@ -1,4 +1,4 @@
-package com.estetica.api_estetica.dto;
+package com.estetica.api_estetica.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,6 +1,6 @@
 package com.estetica.api_estetica.service;
 
-import com.estetica.api_estetica.dto.TreatmentDTO;
+import com.estetica.api_estetica.dto.treatment.TreatmentDTO;
 import com.estetica.api_estetica.exception.NotFoundException;
 import com.estetica.api_estetica.mapper.Mapper;
 import com.estetica.api_estetica.model.entity.Treatment;

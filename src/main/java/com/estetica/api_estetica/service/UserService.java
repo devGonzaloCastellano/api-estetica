@@ -1,10 +1,9 @@
 package com.estetica.api_estetica.service;
 
-import com.estetica.api_estetica.dto.UserDTO;
+import com.estetica.api_estetica.dto.user.*;
 import com.estetica.api_estetica.exception.NotFoundException;
-import com.estetica.api_estetica.mapper.Mapper;
+import com.estetica.api_estetica.mapper.UserMapper;
 import com.estetica.api_estetica.model.entity.User;
-import com.estetica.api_estetica.model.enums.UserRole;
 import com.estetica.api_estetica.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,38 +17,39 @@ public class UserService implements IUserService{
     private UserRepository userRepository;
 
     @Override
-    public List<UserDTO> getUsers() {
-        return userRepository.findAll().stream().map(Mapper::toDTO).toList();
+    public List<UserResponseDTO> getUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDto) {
-
-        User user = User.builder()
-                .firstname(userDto.getFirstName())
-                .lastname(userDto.getLastName())
-                .email(userDto.getEmail())
-                .username(userDto.getUsername())
-                .password(userDto.getPassword())
-                .userRole(UserRole.valueOf(userDto.getRole()))
-                .build();
-
-        return  Mapper.toDTO(userRepository.save(user));
+    public UserResponseDTO createUser(UserCreateDTO dto) {
+        User user = UserMapper.fromCreateDTO(dto);
+        return UserMapper.toResponse(userRepository.save(user));
     }
 
     @Override
-    public UserDTO updateUser(Long id, UserDTO userDto) {
+    public UserResponseDTO registerUser(UserRegisterDTO dto) {
+        User user = UserMapper.fromRegisterDTO(dto);
+        return UserMapper.toResponse(userRepository.save(user));
+    }
 
+    @Override
+    public UserResponseDTO updateUser(Long id, UserUpdateDTO dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+        UserMapper.updateEntity(user, dto);
+        return UserMapper.toResponse(userRepository.save(user));
+    }
 
-        user.setFirstname(userDto.getFirstName());
-        user.setLastname(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-
-        return Mapper.toDTO(userRepository.save(user));
+    @Override
+    public void updateCredentials(Long id, UserCredentialUpdateDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+        UserMapper.updateCredentials(user, dto);
+        userRepository.save(user);
     }
 
     @Override

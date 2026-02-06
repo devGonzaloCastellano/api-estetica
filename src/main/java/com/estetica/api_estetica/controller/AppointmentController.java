@@ -1,6 +1,6 @@
 package com.estetica.api_estetica.controller;
 
-import com.estetica.api_estetica.dto.AppointmentDTO;
+import com.estetica.api_estetica.dto.appointment.AppointmentDTO;
 import com.estetica.api_estetica.service.IAppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

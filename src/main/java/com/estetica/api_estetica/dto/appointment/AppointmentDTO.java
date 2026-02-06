@@ -1,4 +1,4 @@
-package com.estetica.api_estetica.dto;
+package com.estetica.api_estetica.dto.appointment;
 
 import lombok.*;
 

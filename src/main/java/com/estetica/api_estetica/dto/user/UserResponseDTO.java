@@ -1,4 +1,4 @@
-package com.estetica.api_estetica.dto;
+package com.estetica.api_estetica.dto.user;
 
 import lombok.*;
 
@@ -7,12 +7,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
+public class UserResponseDTO {
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
-    private String username;
-    private String password;
     private String role;
 }

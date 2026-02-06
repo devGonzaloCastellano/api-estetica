@@ -1,6 +1,6 @@
 package com.estetica.api_estetica.service;
 
-import com.estetica.api_estetica.dto.TreatmentDTO;
+import com.estetica.api_estetica.dto.treatment.TreatmentDTO;
 
 import java.util.List;
 

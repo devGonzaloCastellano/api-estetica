@@ -1,7 +1,8 @@
 package com.estetica.api_estetica.controller;
 
-import com.estetica.api_estetica.dto.UserDTO;
+import com.estetica.api_estetica.dto.user.*;
 import com.estetica.api_estetica.service.IUserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +18,14 @@ public class UserController {
     private IUserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getUser(){
+    public ResponseEntity<List<UserResponseDTO>> getUsers(){
         return ResponseEntity.ok(userService.getUsers());
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user){
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO dto){
 
-        UserDTO userCreado = userService.createUser(user);
+        UserResponseDTO userCreado = userService.createUser(dto);
 
         return ResponseEntity
                 .created(URI.create("/api/users/" + userCreado.getId()))
@@ -32,9 +33,23 @@ public class UserController {
 
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserRegisterDTO dto){
+        UserResponseDTO userCreado = userService.registerUser(dto);
+        return  ResponseEntity
+                .created(URI.create("/api/users/" + userCreado.getId()))
+                .body(userCreado);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO user){
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO dto){
+        return ResponseEntity.ok(userService.updateUser(id, dto));
+    }
+
+    @PutMapping("/{id}/credentials")
+    public ResponseEntity<Void> updateCredentials(@PathVariable Long id, @Valid @RequestBody UserCredentialUpdateDTO dto) {
+        userService.updateCredentials(id, dto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

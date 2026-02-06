@@ -1,4 +1,4 @@
-package com.estetica.api_estetica.dto;
+package com.estetica.api_estetica.dto.treatment;
 
 import lombok.*;
 

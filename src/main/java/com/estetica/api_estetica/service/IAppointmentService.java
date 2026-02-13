@@ -1,14 +1,16 @@
 package com.estetica.api_estetica.service;
 
-import com.estetica.api_estetica.dto.appointment.AppointmentDTO;
+import com.estetica.api_estetica.dto.appointment.AppointmentCreateDTO;
+import com.estetica.api_estetica.dto.appointment.AppointmentResponseDTO;
+import com.estetica.api_estetica.dto.appointment.AppointmentUpdateDTO;
 
 import java.util.List;
 
 public interface IAppointmentService {
 
-    List<AppointmentDTO> getAppointment();
-    AppointmentDTO createAppointment(AppointmentDTO appointmentDto);
-    AppointmentDTO updateAppointment(Long id, AppointmentDTO appointmentDto);
+    List<AppointmentResponseDTO> getAppointments();
+    AppointmentResponseDTO createAppointment(AppointmentCreateDTO dto);
+    AppointmentResponseDTO updateAppointment(Long id, AppointmentUpdateDTO dto);
     void deleteAppointment(Long id);
 
 }

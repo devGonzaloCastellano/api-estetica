@@ -35,4 +35,12 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
 
+
+    //Recalcula el tiempo de finalización de los turnos según la duración del tratamiento
+    public void recalculateEndTime() {
+        if (this.startTime != null && this.treatment != null) {
+            this.endTime = this.startTime.plusMinutes(this.treatment.getDuration());
+        }
+    }
+
 }

@@ -1,7 +1,10 @@
 package com.estetica.api_estetica.controller;
 
-import com.estetica.api_estetica.dto.appointment.AppointmentDTO;
+import com.estetica.api_estetica.dto.appointment.AppointmentCreateDTO;
+import com.estetica.api_estetica.dto.appointment.AppointmentResponseDTO;
+import com.estetica.api_estetica.dto.appointment.AppointmentUpdateDTO;
 import com.estetica.api_estetica.service.IAppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,21 +20,21 @@ public class AppointmentController {
     private IAppointmentService appointmentService;
 
     @GetMapping
-    public ResponseEntity<List<AppointmentDTO>> getAppointments(){
-        return ResponseEntity.ok(appointmentService.getAppointment());
+    public ResponseEntity<List<AppointmentResponseDTO>> getAppointments(){
+        return ResponseEntity.ok(appointmentService.getAppointments());
     }
 
     @PostMapping
-    public ResponseEntity<AppointmentDTO> createAppointment(@RequestBody AppointmentDTO appointment){
-        AppointmentDTO appointmentCreado = appointmentService.createAppointment(appointment);
+    public ResponseEntity<AppointmentResponseDTO> createAppointment(@Valid @RequestBody AppointmentCreateDTO dto){
+        AppointmentResponseDTO appointmentCreado = appointmentService.createAppointment(dto);
         return ResponseEntity
                 .created(URI.create("/api/appointments/" + appointmentCreado.getId()))
                 .body(appointmentCreado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppointmentDTO> updateAppointment(@PathVariable Long id,@RequestBody AppointmentDTO appointment){
-        return ResponseEntity.ok(appointmentService.updateAppointment(id, appointment));
+    public ResponseEntity<AppointmentResponseDTO> updateAppointment(@PathVariable Long id,@RequestBody AppointmentUpdateDTO dto){
+        return ResponseEntity.ok(appointmentService.updateAppointment(id, dto));
     }
 
     @DeleteMapping("/{id}")

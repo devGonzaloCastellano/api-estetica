@@ -1,8 +1,6 @@
 package com.estetica.api_estetica.mapper;
 
-import com.estetica.api_estetica.dto.appointment.AppointmentDTO;
 import com.estetica.api_estetica.dto.treatment.TreatmentDTO;
-import com.estetica.api_estetica.model.entity.Appointment;
 import com.estetica.api_estetica.model.entity.Treatment;
 
 
@@ -21,17 +19,5 @@ public class Mapper {
                 .build();
     }
 
-    public static AppointmentDTO AppointToDTO(Appointment a){
-        if(a == null) return null;
-        return AppointmentDTO.builder()
-                .id(a.getId())
-                .clientId(a.getClient().getId())
-                .employeeId(a.getEmployee().getId())
-                .treatmentId(a.getTreatment().getId())
-                .startTime(a.getStartTime())
-                .endTime(a.getEndTime())
-                .appointmentStatus(a.getAppointmentStatus().toString())
-                .build();
 
-    }
 }

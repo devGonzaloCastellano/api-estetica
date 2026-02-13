@@ -8,14 +8,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AppointmentDTO {
-
+public class AppointmentResponseDTO {
     private Long id;
-    private Long clientId;
-    private Long employeeId;
-    private Long treatmentId;
+    private String clientName;
+    private String employeeName;
+    private String treatmentName;
+    private String treatmentDescription;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String appointmentStatus;
-
+    private String status;
 }

@@ -6,8 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TreatmentDTO {
-    private Long id;
+public class TreatmentUpdateDTO {
     private String name;
     private Integer duration;
     private String description;

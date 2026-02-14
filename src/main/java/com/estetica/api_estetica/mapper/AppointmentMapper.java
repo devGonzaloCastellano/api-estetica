@@ -37,15 +37,6 @@ public class AppointmentMapper {
                 .build();
     }
 
-
-    /**
-     * Construye una entidad Appointment de un AppointmentCreateDTO
-     * Este método es utilizado para el alta de turnos
-     *
-     * @param dto datos recibidos para la creación de turnos
-     * @return entidad Appointment con los datos básicos cargados
-     */
-
     /**
      * Crea una entidad Appointment a partir de un AppointmentCreateDTO
      * y de las entidades del dominio previamente recuperadas.

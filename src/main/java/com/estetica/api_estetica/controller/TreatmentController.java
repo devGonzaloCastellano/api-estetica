@@ -1,7 +1,10 @@
 package com.estetica.api_estetica.controller;
 
-import com.estetica.api_estetica.dto.treatment.TreatmentDTO;
+import com.estetica.api_estetica.dto.treatment.TreatmentCreateDTO;
+import com.estetica.api_estetica.dto.treatment.TreatmentResponseDTO;
+import com.estetica.api_estetica.dto.treatment.TreatmentUpdateDTO;
 import com.estetica.api_estetica.service.ITreatmentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +20,14 @@ public class TreatmentController {
     private ITreatmentService treatmentService;
 
     @GetMapping
-    public ResponseEntity<List<TreatmentDTO>> getTreatment(){
+    public ResponseEntity<List<TreatmentResponseDTO>> getTreatment(){
         return ResponseEntity.ok(treatmentService.getTreatment());
     }
 
     @PostMapping
-    public ResponseEntity<TreatmentDTO> createTreatment(@RequestBody TreatmentDTO treatment){
+    public ResponseEntity<TreatmentResponseDTO> createTreatment(@Valid @RequestBody TreatmentCreateDTO dto){
 
-        TreatmentDTO treatmentCreado = treatmentService.createTreatment(treatment);
+        TreatmentResponseDTO treatmentCreado = treatmentService.createTreatment(dto);
         return ResponseEntity
                 .created(URI.create("/api/treatments/" + treatmentCreado.getId()))
                 .body(treatmentCreado);
@@ -32,12 +35,12 @@ public class TreatmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TreatmentDTO> updateTreatment(@PathVariable Long id,@RequestBody TreatmentDTO treatment){
-        return ResponseEntity.ok(treatmentService.updateTreatmen(id, treatment));
+    public ResponseEntity<TreatmentResponseDTO> updateTreatment(@PathVariable Long id, @RequestBody TreatmentUpdateDTO dto){
+        return ResponseEntity.ok(treatmentService.updateTreatment(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTreatement(@PathVariable Long id){
+    public ResponseEntity<Void> deleteTreatment(@PathVariable Long id){
         treatmentService.deleteTreatment(id);
         return ResponseEntity.noContent().build();
     }

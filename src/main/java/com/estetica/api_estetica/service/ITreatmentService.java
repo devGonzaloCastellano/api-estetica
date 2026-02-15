@@ -10,6 +10,6 @@ public interface ITreatmentService {
 
     List<TreatmentResponseDTO> getTreatment();
     TreatmentResponseDTO createTreatment(TreatmentCreateDTO dto);
-    TreatmentResponseDTO updateTreatmen(Long id, TreatmentUpdateDTO dto);
+    TreatmentResponseDTO updateTreatment(Long id, TreatmentUpdateDTO dto);
     void deleteTreatment(Long id);
 }

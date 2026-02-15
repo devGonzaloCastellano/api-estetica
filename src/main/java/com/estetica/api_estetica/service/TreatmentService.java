@@ -1,8 +1,11 @@
 package com.estetica.api_estetica.service;
 
+import com.estetica.api_estetica.dto.treatment.TreatmentCreateDTO;
 import com.estetica.api_estetica.dto.treatment.TreatmentDTO;
+import com.estetica.api_estetica.dto.treatment.TreatmentResponseDTO;
+import com.estetica.api_estetica.dto.treatment.TreatmentUpdateDTO;
 import com.estetica.api_estetica.exception.NotFoundException;
-import com.estetica.api_estetica.mapper.Mapper;
+import com.estetica.api_estetica.mapper.TreatmentMapper;
 import com.estetica.api_estetica.model.entity.Treatment;
 import com.estetica.api_estetica.repository.TreatmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,40 +20,31 @@ public class TreatmentService implements ITreatmentService {
     private TreatmentRepository treatmentRepository;
 
     @Override
-    public List<TreatmentDTO> getTreatment() {
-        return treatmentRepository.findAll().stream().map(Mapper::TreatToDTO).toList();
+    public List<TreatmentResponseDTO> getTreatment() {
+        return treatmentRepository.findAll().stream()
+                .map(TreatmentMapper::toResponse)
+                .toList();
     }
 
     @Override
-    public TreatmentDTO createTreatment(TreatmentDTO treatmentDto) {
-
-        Treatment treatment = Treatment.builder()
-                .name(treatmentDto.getName())
-                .duration(treatmentDto.getDuration())
-                .description(treatmentDto.getDescription())
-                .price(treatmentDto.getPrice())
-                .build();
-
-        return Mapper.TreatToDTO(treatmentRepository.save(treatment));
+    public TreatmentResponseDTO createTreatment(TreatmentCreateDTO dto) {
+        Treatment treatment = TreatmentMapper.fromCreate(dto);
+        return TreatmentMapper.toResponse(treatmentRepository.save(treatment));
     }
 
     @Override
-    public TreatmentDTO updateTreatmen(Long id, TreatmentDTO treatmentDto) {
+    public TreatmentResponseDTO updateTreatment(Long id, TreatmentUpdateDTO dto) {
 
         Treatment treatment = treatmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Tratamiento no encontrado"));
-
-        treatment.setName(treatmentDto.getName());
-        treatment.setDuration(treatmentDto.getDuration());
-        treatment.setDescription(treatmentDto.getDescription());
-        treatment.setPrice(treatmentDto.getPrice());
-
-        return Mapper.TreatToDTO(treatmentRepository.save(treatment));
+        TreatmentMapper.updateEntity(treatment, dto);
+        return TreatmentMapper.toResponse(treatmentRepository.save(treatment));
     }
 
     @Override
     public void deleteTreatment(Long id) {
         if (!treatmentRepository.existsById(id))
             throw new NotFoundException("Tratamiento no encontrado para eliminar");
+        treatmentRepository.deleteById(id);
     }
 }

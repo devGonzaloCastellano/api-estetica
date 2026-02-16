@@ -1,7 +1,10 @@
 # API Estética – Gestión de Turnos
 
 API REST desarrollada con **Spring Boot** para la gestión de turnos de una estética.  
-El proyecto está pensado con un enfoque escalable, separando responsabilidades y versionando funcionalidades.
+El proyecto fue construido con un enfoque escalable, aplicando separación de responsabilidades, 
+versionado por ramas y evolución progresiva de la arquitectura.
+
+Actualmente el sistema se encuentra en su Versión 2 (v2.0.0).
 
 ---
 
@@ -29,34 +32,39 @@ El proyecto sigue una arquitectura en capas:
 - **Mapper**: conversión Entity ⇄ DTO
 - **Enum**: estados y roles del sistema
 
----
-
-## 📌 Versión 1 – Alcance
-
-### ✔ Funcionalidades incluidas
-
-- CRUD completo de:
-  - Usuarios
-  - Tratamientos
-  - Turnos
-- Manejo de relaciones entre entidades
-- Uso de DTOs genéricos
-- Mappers explícitos por entidad
-- Endpoints REST bien definidos
-- Pruebas manuales con Postman
+La estructura está pensada para facilitar mantenibilidad, escalabilidad 
+y futuras mejoras (seguridad, reglas de negocio avanzadas, etc.).
 
 ---
 
-### ⚠ Consideraciones de la V1
+## 📌 Versión 2 – Refactor estructural y validaciones
+
+### ✔ Mejoras implementadas
+
+- Separación de DTOs por responsabilidad:
+  - CreateDTO
+  - UpdateDTO
+  - ResponseDTO
+- Incorporación de validaciones (@NotNull, @NotBlank)
+- Asignación automática de reglas de negocio:
+  - Registro → Rol CLIENTE
+  - Creación interna de usuario → Rol EMPLEADO
+  - Creación de turno → Estado CONFIRMED
+- Recalculo automático de hora de finalización según duración del tratamiento
+- Refactorización completa de mappers
+- Eliminación de DTOs genéricos
+- Pruebas funcionales completas con Postman
+
+---
+
+### ⚠ Consideraciones de la V2
 
 Las siguientes decisiones fueron **intencionales** para esta versión:
 
-- No se aplican validaciones de campos (`null` permitidos)
-- No hay autenticación ni autorización
+- No se aplican validaciones de registros repetidos
 - No hay control de roles
 - El método PUT permite actualización parcial
 - Manejo de errores básico (sin `@ControllerAdvice`)
-- Uso de DTOs genéricos (sin separación por responsabilidad)
 
 Estas mejoras están planificadas para versiones posteriores.
 
@@ -64,21 +72,23 @@ Estas mejoras están planificadas para versiones posteriores.
 
 ## 🔄 Versionado del proyecto
 
-### Versión 1 (actual)
+### Versión 1 (Finalizada)
 - CRUD funcional completo
 - Validación de estructura
 - Validación de relaciones entre entidades
 - Enfoque en funcionamiento y arquitectura base
 
-### Versión 2 (planificada)
+### Versión 2 (Actual)
 - Separación de DTOs por responsabilidad (`Create`, `Update`)
 - Validaciones de datos
-- Manejo de errores más preciso
+- Reglas de negocio automatizadas
+- Refactor estructural
 
 ### Versión 3 (planificada)
 - Autenticación
 - Control de roles
 - Reglas de negocio avanzadas
+- Manejo global de excepciones
 
 ---
 
@@ -91,6 +101,14 @@ Las pruebas se realizaron manualmente utilizando **Postman**, validando:
 - Eliminación
 - Manejo de relaciones
 - Respuestas HTTP esperadas
+- Validaciones de campos obligatorios
+- Asignación automática de roles y estados
+
+La colección de pruebas se encuentra en:
+
+```
+/postman/api_estetica.postman_collection.json
+```
 
 ---
 

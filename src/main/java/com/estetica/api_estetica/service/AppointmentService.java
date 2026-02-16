@@ -8,6 +8,7 @@ import com.estetica.api_estetica.mapper.AppointmentMapper;
 import com.estetica.api_estetica.model.entity.Appointment;
 import com.estetica.api_estetica.model.entity.Treatment;
 import com.estetica.api_estetica.model.entity.User;
+import com.estetica.api_estetica.model.enums.AppointmentStatus;
 import com.estetica.api_estetica.repository.AppointmentRepository;
 import com.estetica.api_estetica.repository.TreatmentRepository;
 import com.estetica.api_estetica.repository.UserRepository;
@@ -44,6 +45,8 @@ public class AppointmentService implements IAppointmentService{
 
         //Calcula el tiempo final del turno según la duración del tratamiento.
         appointment.recalculateEndTime();
+        //Asigna el estado del turno de forma predeterminada
+        appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
 
         return AppointmentMapper.toResponse(appointmentRepository.save(appointment));
 

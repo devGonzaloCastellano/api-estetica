@@ -4,6 +4,7 @@ import com.estetica.api_estetica.dto.user.*;
 import com.estetica.api_estetica.exception.NotFoundException;
 import com.estetica.api_estetica.mapper.UserMapper;
 import com.estetica.api_estetica.model.entity.User;
+import com.estetica.api_estetica.model.enums.UserRole;
 import com.estetica.api_estetica.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,14 @@ public class UserService implements IUserService{
     @Override
     public UserResponseDTO createUser(UserCreateDTO dto) {
         User user = UserMapper.fromCreateDTO(dto);
+        user.setUserRole(UserRole.EMPLOYEE);
         return UserMapper.toResponse(userRepository.save(user));
     }
 
     @Override
     public UserResponseDTO registerUser(UserRegisterDTO dto) {
         User user = UserMapper.fromRegisterDTO(dto);
+        user.setUserRole(UserRole.CLIENT);
         return UserMapper.toResponse(userRepository.save(user));
     }
 

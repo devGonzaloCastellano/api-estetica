@@ -28,14 +28,13 @@ public class UserService implements IUserService{
     @Override
     public UserResponseDTO createUser(UserCreateDTO dto) {
         User user = UserMapper.fromCreateDTO(dto);
-        user.setUserRole(UserRole.EMPLOYEE);
         return UserMapper.toResponse(userRepository.save(user));
     }
 
     @Override
     public UserResponseDTO registerUser(UserRegisterDTO dto) {
         User user = UserMapper.fromRegisterDTO(dto);
-        user.setUserRole(UserRole.CLIENT);
+
         return UserMapper.toResponse(userRepository.save(user));
     }
 

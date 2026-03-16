@@ -2,6 +2,7 @@ package com.estetica.api_estetica.service;
 
 import com.estetica.api_estetica.dto.AuthLoginRequestDTO;
 import com.estetica.api_estetica.dto.AuthResponseDTO;
+import com.estetica.api_estetica.repository.UserRepository;
 import com.estetica.api_estetica.security.config.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,15 +11,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import proyecto.pruebaSecurity.model.UserSec;
-import proyecto.pruebaSecurity.repository.UserRepository;
+import com.estetica.api_estetica.model.entity.User;
+
 
 
 import java.util.ArrayList;
@@ -36,22 +37,23 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserSec userSec = userRepo.findUserEntityByUsername(username)
+        User user = userRepo.findUserEntityByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("El usuario " + username + " no fue encontrado."));
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
-        userSec.getRoleList()
-                .forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRole()))));
-        userSec.getRoleList().stream()
-                .flatMap(role -> role.getPermissionsList().stream())
+        user.getRoles()
+                .forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getName()))));
+        user.getRoles().stream()
+                .flatMap(role -> role.getPermissions().stream())
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getPermissionName())));
 
-        return new User(userSec.getUsername(),
-                userSec.getPassword(),
-                userSec.isEnabled(),
-                userSec.isAccountNotExpired(),
-                userSec.isCredentialNotExpired(),
-                userSec.isAccountNotLocked(),
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                user.isEnabled(),
+                true,
+                true,
+                user.isAccountNotLocked(),
                 authorityList);
     }
 

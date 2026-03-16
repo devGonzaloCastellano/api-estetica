@@ -1,6 +1,7 @@
 package com.estetica.api_estetica.security.config.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.estetica.api_estetica.security.config.jwt.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import proyecto.pruebaSecurity.utils.JwtUtils;
+
 
 
 import java.io.IOException;

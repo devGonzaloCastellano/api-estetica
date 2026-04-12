@@ -7,6 +7,7 @@ import com.estetica.api_estetica.service.IAppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,11 +21,13 @@ public class AppointmentController {
     private IAppointmentService appointmentService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<List<AppointmentResponseDTO>> getAppointments(){
         return ResponseEntity.ok(appointmentService.getAppointments());
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<AppointmentResponseDTO> createAppointment(@Valid @RequestBody AppointmentCreateDTO dto){
         AppointmentResponseDTO appointmentCreado = appointmentService.createAppointment(dto);
         return ResponseEntity
@@ -32,12 +35,14 @@ public class AppointmentController {
                 .body(appointmentCreado);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<AppointmentResponseDTO> updateAppointment(@PathVariable Long id,@RequestBody AppointmentUpdateDTO dto){
         return ResponseEntity.ok(appointmentService.updateAppointment(id, dto));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id){
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();

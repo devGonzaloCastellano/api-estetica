@@ -3,12 +3,16 @@ package com.estetica.api_estetica.service;
 import com.estetica.api_estetica.dto.user.*;
 import com.estetica.api_estetica.exception.NotFoundException;
 import com.estetica.api_estetica.mapper.UserMapper;
+import com.estetica.api_estetica.model.entity.Role;
 import com.estetica.api_estetica.model.entity.User;
 import com.estetica.api_estetica.model.enums.UserRole;
+import com.estetica.api_estetica.repository.RoleRepository;
 import com.estetica.api_estetica.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -16,6 +20,12 @@ public class UserService implements IUserService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserResponseDTO> getUsers() {
@@ -34,7 +44,13 @@ public class UserService implements IUserService{
     @Override
     public UserResponseDTO registerUser(UserRegisterDTO dto) {
         User user = UserMapper.fromRegisterDTO(dto);
-
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setEnabled(true);
+        user.setAccountNotLocked(true);
+        Role clientRole = roleRepository.findByName("CLIENT")
+                .orElseThrow(() -> new NotFoundException("Error: El Rol CLIENTE no existe en la base de datos."));
+        user.getRoles().add(clientRole);
+        if (user.getRoles() == null) {user.setRoles(new HashSet<>());        }
         return UserMapper.toResponse(userRepository.save(user));
     }
 
@@ -50,7 +66,8 @@ public class UserService implements IUserService{
     public void updateCredentials(Long id, UserCredentialUpdateDTO dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-        UserMapper.updateCredentials(user, dto);
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
     }
 

@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@PreAuthorize("denyAll()")
 @RequestMapping("/api/appointments")
 public class AppointmentController {
 

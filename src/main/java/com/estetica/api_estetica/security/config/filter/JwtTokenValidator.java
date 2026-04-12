@@ -29,22 +29,38 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
 
-        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (jwtToken != null){
-            jwtToken = jwtToken.substring(7);
-            DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-            String username = jwtUtils.extractUsername(decodedJWT);
-            String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
+        if (header != null && header.startsWith("Bearer ")){
+            try {
+                String token = header.substring(7);
+                DecodedJWT decodedJWT = jwtUtils.validateToken(token);
 
-            Collection<? extends GrantedAuthority> authoritiesList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-            SecurityContext context = SecurityContextHolder.getContext();
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authoritiesList);
-            context.setAuthentication(authentication);
-            SecurityContextHolder.setContext(context);
+                String username = jwtUtils.extractUsername(decodedJWT);
+                String authorities = jwtUtils
+                        .getSpecificClaim(decodedJWT, "authorities")
+                        .asString();
+
+                Collection<? extends GrantedAuthority> authoritiesList =
+                        AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        authoritiesList);
+
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                context.setAuthentication(authentication);
+                SecurityContextHolder.setContext(context);
+
+            }catch (Exception e){
+                SecurityContextHolder.clearContext();
+            }
         }
         filterChain.doFilter(request, response);
     }

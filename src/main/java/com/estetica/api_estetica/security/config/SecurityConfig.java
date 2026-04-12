@@ -5,6 +5,7 @@ import com.estetica.api_estetica.security.config.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,9 +33,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
         return http
                 .csrf(csrf -> csrf.disable())
-                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
+                .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas — no requieren JWT
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/*/credentials").permitAll()
+                        // Todo lo demás requiere token válido
+                        .anyRequest().authenticated())
                 .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
                 .build();
     }

@@ -2,6 +2,10 @@ package com.estetica.api_estetica.mapper;
 
 import com.estetica.api_estetica.dto.user.*;
 import com.estetica.api_estetica.model.entity.User;
+import com.estetica.api_estetica.model.entity.Role;
+
+import java.util.HashSet;
+
 
 public class UserMapper {
 
@@ -15,11 +19,18 @@ public class UserMapper {
     public static UserResponseDTO toResponse(User user) {
         if (user == null) return null;
 
+        // Extraemos el nombre del primer rol para el DTO
+        String roleName = user.getRoles().stream()
+                .map(Role::getName)
+                .findFirst()
+                .orElse("NO_ROLE");
+
         return UserResponseDTO.builder()
                 .id(user.getId())
-                .firstName(user.getFirstname())
-                .lastName(user.getLastname())
+                .firstName(user.getFirstname()) // Mapea 'firstname' de la entidad
+                .lastName(user.getLastname())   // Mapea 'lastname' de la entidad
                 .email(user.getEmail())
+                .role(roleName)
                 .build();
     }
 
@@ -36,9 +47,12 @@ public class UserMapper {
         if (dto == null) return null;
 
         return User.builder()
-                .firstname(dto.getFirstName())
-                .lastname(dto.getLastName())
+                .firstname(dto.getFirstName()) // Usar 'firstname' (minúscula) como en tu @Entity
+                .lastname(dto.getLastName())   // Usar 'lastname' (minúscula) como en tu @Entity
                 .email(dto.getEmail())
+                .enabled(true)
+                .accountNotLocked(true)
+                .roles(new HashSet<>()) // Evita el NullPointerException posterior
                 .build();
     }
 
@@ -54,9 +68,12 @@ public class UserMapper {
         if (dto == null) return null;
 
         return User.builder()
-                .email(dto.getEmail())
                 .username(dto.getUsername())
+                .email(dto.getEmail())
                 .password(dto.getPassword())
+                .enabled(true)
+                .accountNotLocked(true)
+                .roles(new HashSet<>())
                 .build();
     }
 
@@ -78,19 +95,5 @@ public class UserMapper {
 
         if (dto.getEmail() != null)
             user.setEmail(dto.getEmail());
-    }
-
-
-    /**
-     * Aplica la actualización de credenciales sobre una entidad User.
-     * No devuelve datos, únicamente modifica el estado de la entidad.
-     * La validación de los datos se realiza previamente mediante Bean Validation.
-     *
-     * @param user entidad User a modificar
-     * @param dto  datos de credenciales provenientes del request
-     */
-    public static void updateCredentials(User user, UserCredentialUpdateDTO dto) {
-        user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword());
     }
 }

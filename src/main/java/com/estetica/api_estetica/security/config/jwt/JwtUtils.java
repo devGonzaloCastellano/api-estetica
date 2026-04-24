@@ -10,6 +10,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -30,7 +31,8 @@ public class JwtUtils {
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
         //Esto está dentro del security context holder
-        String username = authentication.getPrincipal().toString();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
 
         //tambien obtenemos los permisos/autorizaciones
         //la idea es traer los permisos separados por coma

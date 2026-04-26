@@ -70,7 +70,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     public Authentication authenticate(String username, String password){
         UserDetails userDetails = this.loadUserByUsername(username);
-        
+
         if (!passwordEncoder.matches(password, userDetails.getPassword())){
             throw new BadCredentialsException("Invalida password");
         }

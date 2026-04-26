@@ -5,7 +5,6 @@ import com.estetica.api_estetica.exception.NotFoundException;
 import com.estetica.api_estetica.mapper.UserMapper;
 import com.estetica.api_estetica.model.entity.Role;
 import com.estetica.api_estetica.model.entity.User;
-import com.estetica.api_estetica.model.enums.UserRole;
 import com.estetica.api_estetica.repository.RoleRepository;
 import com.estetica.api_estetica.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -78,6 +78,12 @@ public class UserService implements IUserService{
         userRepository.deleteById(id);
     }
 
+    public boolean isOwner(Long id, String username) {
+        return userRepository.findById(id)
+                .map(user -> user.getUsername().equals(username))
+                .orElse(false);
+    }
+
 }
 
 

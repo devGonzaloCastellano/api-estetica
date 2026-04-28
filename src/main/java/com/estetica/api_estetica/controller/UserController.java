@@ -45,13 +45,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
+    @PreAuthorize("hasRole('ADMIN') or @userService.isOwner(#id, authentication.name)")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO dto){
         return ResponseEntity.ok(userService.updateUser(id, dto));
     }
 
     @PutMapping("/{id}/credentials")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("@userService.isOwner(#id, authentication.name)")
     public ResponseEntity<Void> updateCredentials(@PathVariable Long id, @Valid @RequestBody UserCredentialUpdateDTO dto) {
         userService.updateCredentials(id, dto);
         return ResponseEntity.noContent().build();

@@ -1,10 +1,10 @@
 # API Estética – Gestión de Turnos
 
 API REST desarrollada con **Spring Boot** para la gestión de turnos de una estética.  
-El proyecto fue construido con un enfoque escalable, aplicando separación de responsabilidades, 
+El proyecto fue construido con un enfoque escalable, aplicando separación de responsabilidades,
 versionado por ramas y evolución progresiva de la arquitectura.
 
-Actualmente el sistema se encuentra en su Versión 2 (v2.0.0).
+Actualmente el sistema se encuentra en su Versión 3 (v3.0.0).
 
 ---
 
@@ -12,10 +12,13 @@ Actualmente el sistema se encuentra en su Versión 2 (v2.0.0).
 
 - Java 17  
 - Spring Boot  
+- Spring Security
+- JWT (Auth0)
 - Spring Data JPA  
 - MySQL  
 - Maven  
 - Lombok  
+- JavaMailSender (Mailtrap)
 - Postman (testing manual)
 
 ---
@@ -31,40 +34,34 @@ El proyecto sigue una arquitectura en capas:
 - **DTO**: transferencia de datos
 - **Mapper**: conversión Entity ⇄ DTO
 - **Enum**: estados y roles del sistema
+- **Security**: configuración de autenticación y autorización
 
-La estructura está pensada para facilitar mantenibilidad, escalabilidad 
-y futuras mejoras (seguridad, reglas de negocio avanzadas, etc.).
+La estructura está pensada para facilitar mantenibilidad, escalabilidad
+y futuras mejoras (testing, microservicios, etc.).
 
 ---
 
-## 📌 Versión 2 – Refactor estructural y validaciones
+## 📌 Versión 3 – Seguridad y autenticación
 
 ### ✔ Mejoras implementadas
 
-- Separación de DTOs por responsabilidad:
-  - CreateDTO
-  - UpdateDTO
-  - ResponseDTO
-- Incorporación de validaciones (@NotNull, @NotBlank)
-- Asignación automática de reglas de negocio:
-  - Registro → Rol CLIENTE
-  - Creación interna de usuario → Rol EMPLEADO
-  - Creación de turno → Estado CONFIRMED
-- Recalculo automático de hora de finalización según duración del tratamiento
-- Refactorización completa de mappers
-- Eliminación de DTOs genéricos
-- Pruebas funcionales completas con Postman
+- Autenticación stateless con JWT
+- Autorización por roles (ADMIN, EMPLOYEE, CLIENT)
+- Control de acceso por endpoint con `@PreAuthorize`
+- Patrón deny-all por defecto a nivel de clase
+- Validación de ownership con `isOwner()` para acceso a recursos propios
+- Alta administrativa de usuarios con generación automática de credenciales temporales
+- Envío de credenciales temporales por email (JavaMailSender + Mailtrap)
+- Refactor de inyección de dependencias: migración de `@Autowired` a `@RequiredArgsConstructor`
+- Log de errores en filtro JWT
 
----
-
-### ⚠ Consideraciones de la V2
+### ⚠ Consideraciones de la V3
 
 Las siguientes decisiones fueron **intencionales** para esta versión:
 
-- No se aplican validaciones de registros repetidos
-- No hay control de roles
-- El método PUT permite actualización parcial
+- No se valida superposición de turnos
 - Manejo de errores básico (sin `@ControllerAdvice`)
+- El modelo de permisos granulares (`Permission`) está definido pero no implementado
 
 Estas mejoras están planificadas para versiones posteriores.
 
@@ -78,17 +75,24 @@ Estas mejoras están planificadas para versiones posteriores.
 - Validación de relaciones entre entidades
 - Enfoque en funcionamiento y arquitectura base
 
-### Versión 2 (Actual)
+### Versión 2 (Finalizada)
 - Separación de DTOs por responsabilidad (`Create`, `Update`)
 - Validaciones de datos
 - Reglas de negocio automatizadas
 - Refactor estructural
 
-### Versión 3 (planificada)
-- Autenticación
-- Control de roles
-- Reglas de negocio avanzadas
-- Manejo global de excepciones
+### Versión 3 (Actual)
+- Autenticación stateless con JWT
+- Autorización por roles con `@PreAuthorize`
+- Alta administrativa con credenciales temporales por email
+- Refactor de inyección de dependencias
+- Mejoras de calidad interna (logs, consistencia de código)
+
+### Versión 4 (Planificada)
+- Testing con JUnit y Mockito
+- Documentación interna (Javadoc)
+- Validación de superposición de turnos
+- Manejo global de excepciones (`@ControllerAdvice`)
 
 ---
 
@@ -96,6 +100,9 @@ Estas mejoras están planificadas para versiones posteriores.
 
 Las pruebas se realizaron manualmente utilizando **Postman**, validando:
 
+- Autenticación y generación de JWT
+- Control de acceso por rol
+- Acceso a recursos propios (ownership)
 - Creación de registros
 - Actualización parcial
 - Eliminación

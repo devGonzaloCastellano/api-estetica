@@ -4,7 +4,7 @@ import com.estetica.api_estetica.dto.AuthLoginRequestDTO;
 import com.estetica.api_estetica.dto.AuthResponseDTO;
 import com.estetica.api_estetica.repository.UserRepository;
 import com.estetica.api_estetica.security.config.jwt.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,14 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImp implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
-    JwtUtils jwtUtils;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepo;
+    private final JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

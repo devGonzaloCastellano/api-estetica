@@ -12,22 +12,17 @@ import com.estetica.api_estetica.model.enums.AppointmentStatus;
 import com.estetica.api_estetica.repository.AppointmentRepository;
 import com.estetica.api_estetica.repository.TreatmentRepository;
 import com.estetica.api_estetica.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AppointmentService implements IAppointmentService{
-
-    @Autowired
-    private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    private TreatmentRepository treatmentRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final TreatmentRepository treatmentRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<AppointmentResponseDTO> getAppointments() {

@@ -7,16 +7,15 @@ import com.estetica.api_estetica.exception.NotFoundException;
 import com.estetica.api_estetica.mapper.TreatmentMapper;
 import com.estetica.api_estetica.model.entity.Treatment;
 import com.estetica.api_estetica.repository.TreatmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TreatmentService implements ITreatmentService {
-
-    @Autowired
-    private TreatmentRepository treatmentRepository;
+    private final TreatmentRepository treatmentRepository;
 
     @Override
     public List<TreatmentResponseDTO> getTreatment() {

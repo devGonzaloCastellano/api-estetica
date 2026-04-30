@@ -7,7 +7,8 @@ import com.estetica.api_estetica.model.entity.Role;
 import com.estetica.api_estetica.model.entity.User;
 import com.estetica.api_estetica.repository.RoleRepository;
 import com.estetica.api_estetica.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +16,13 @@ import java.util.HashSet;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements IUserService{
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public List<UserResponseDTO> getUsers() {
@@ -37,7 +35,16 @@ public class UserService implements IUserService{
     @Override
     public UserResponseDTO createUser(UserCreateDTO dto) {
         User user = UserMapper.fromCreateDTO(dto);
-        return UserMapper.toResponse(userRepository.save(user));
+
+        String tempPassword = UUID.randomUUID().toString().substring(0,8);
+        String tempUsername = "user_" + (int)(Math.random() * 90000 + 10000);
+
+        user.setUsername(tempUsername);
+        user.setPassword(passwordEncoder.encode(tempPassword));
+
+        userRepository.save(user);
+        emailService.sendTemporaryCredentials(user.getEmail(), tempUsername, tempPassword);
+        return UserMapper.toResponse(user);
     }
 
     @Override
